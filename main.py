@@ -1,3 +1,8 @@
+# Constants for menu options
+TEXT_TO_MORSE = "1"
+MORSE_TO_TEXT = "2"
+EXIT = "3"
+
 # Morse Code Dictionary (Expanded to include some punctuation marks)
 MORSE_CODE_DICT = {
     'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
@@ -21,49 +26,40 @@ REVERSE_MORSE_CODE_DICT = {value: key for key,
 
 
 def convert_to_morse(input_string):
-    """Converts text to Morse Code."""
-    morse_code = ''
-    for char in input_string:
-        if char in MORSE_CODE_DICT:
-            # Add space between Morse Code characters
-            morse_code += MORSE_CODE_DICT[char] + ' '
-        else:
-            morse_code += '? '  # For unknown characters
-    return morse_code
+    return ' '.join(MORSE_CODE_DICT.get(char, '?') for char in input_string)
 
 
 def convert_from_morse(morse_code):
-    """Converts Morse Code to text."""
-    words = morse_code.split('  ')  # Assumes two spaces between words
-    decoded_message = ''
-
-    for word in words:
-        letters = word.split()
-        for symbol in letters:
-            if symbol in REVERSE_MORSE_CODE_DICT:
-                decoded_message += REVERSE_MORSE_CODE_DICT[symbol]
-            else:
-                decoded_message += '?'
-        decoded_message += ' '
-    return decoded_message.strip()
+    words = morse_code.split('  ')
+    return ' '.join(''.join(REVERSE_MORSE_CODE_DICT.get(symbol, '?') for symbol in word.split()) for word in words)
 
 
-while True:
+def display_menu():
     print("\nChoose an option:")
-    print("1. Convert text to Morse code")
-    print("2. Convert Morse code to text")
-    print("3. Exit")
+    print(f"{TEXT_TO_MORSE}. Convert text to Morse code")
+    print(f"{MORSE_TO_TEXT}. Convert Morse code to text")
+    print(f"{EXIT}. Exit")
 
-    choice = input("> ").strip()
 
-    if choice == "1":
-        user_input = input("Enter a string to convert to Morse Code: ").upper()
-        print(convert_to_morse(user_input))
-    elif choice == "2":
-        user_input = input("Enter Morse Code to convert to text: ")
-        print(convert_from_morse(user_input))
-    elif choice == "3":
-        print("Goodbye!")
-        break
-    else:
-        print("Invalid choice. Please try again.")
+def main():
+    while True:
+        display_menu()
+
+        choice = input("> ").strip()
+
+        if choice == TEXT_TO_MORSE:
+            user_input = input(
+                "Enter a string to convert to Morse Code: ").upper()
+            print(convert_to_morse(user_input))
+        elif choice == MORSE_TO_TEXT:
+            user_input = input("Enter Morse Code to convert to text: ")
+            print(convert_from_morse(user_input))
+        elif choice == EXIT:
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
