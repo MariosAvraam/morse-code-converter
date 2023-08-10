@@ -1,7 +1,9 @@
 # Constants for menu options
 TEXT_TO_MORSE = "1"
 MORSE_TO_TEXT = "2"
-EXIT = "3"
+FILE_TEXT_TO_MORSE = "3"
+FILE_MORSE_TO_TEXT = "4"
+EXIT = "5"
 
 # Morse Code Dictionary (Expanded to include some punctuation marks)
 MORSE_CODE_DICT = {
@@ -38,7 +40,21 @@ def display_menu():
     print("\nChoose an option:")
     print(f"{TEXT_TO_MORSE}. Convert text to Morse code")
     print(f"{MORSE_TO_TEXT}. Convert Morse code to text")
+    print(f"{FILE_TEXT_TO_MORSE}. Convert text from a file to Morse code and save to another file")
+    print(f"{FILE_MORSE_TO_TEXT}. Convert Morse code from a file to text and save to another file")
     print(f"{EXIT}. Exit")
+
+
+def read_from_file(filename):
+    """Read content from a file."""
+    with open(filename, 'r') as file:
+        return file.read()
+
+
+def write_to_file(filename, content):
+    """Write content to a file."""
+    with open(filename, 'w') as file:
+        file.write(content)
 
 
 def main():
@@ -54,6 +70,24 @@ def main():
         elif choice == MORSE_TO_TEXT:
             user_input = input("Enter Morse Code to convert to text: ")
             print(convert_from_morse(user_input))
+        elif choice == FILE_TEXT_TO_MORSE:  # New option for reading text from file
+            input_filename = input(
+                "Enter the name of the file with the text: ")
+            output_filename = input(
+                "Enter the name of the file to save the Morse code: ")
+            file_content = read_from_file(input_filename).upper()
+            morse_code = convert_to_morse(file_content)
+            write_to_file(output_filename, morse_code)
+            print(f"Morse code saved to {output_filename}")
+        elif choice == FILE_MORSE_TO_TEXT:  # New option for reading Morse code from file
+            input_filename = input(
+                "Enter the name of the file with the Morse code: ")
+            output_filename = input(
+                "Enter the name of the file to save the text: ")
+            morse_content = read_from_file(input_filename)
+            text_content = convert_from_morse(morse_content)
+            write_to_file(output_filename, text_content)
+            print(f"Text saved to {output_filename}")
         elif choice == EXIT:
             print("Goodbye!")
             break
