@@ -1,3 +1,14 @@
+"""
+Morse Code Converter
+
+This script allows the user to convert text to Morse code and vice versa.
+The user can also read text or Morse code from a file and save the results to another file.
+
+Usage:
+    Run the script and choose an option from the displayed menu.
+"""
+
+
 # Constants for menu options
 TEXT_TO_MORSE = "1"
 MORSE_TO_TEXT = "2"
