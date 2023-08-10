@@ -8,6 +8,8 @@ Usage:
     Run the script and choose an option from the displayed menu.
 """
 
+from file_handler import read_from_file, write_to_file
+from morse_converter import convert_to_morse, convert_from_morse
 
 # ======================
 # CONSTANTS
@@ -17,57 +19,6 @@ MORSE_TO_TEXT = "2"
 FILE_TEXT_TO_MORSE = "3"
 FILE_MORSE_TO_TEXT = "4"
 EXIT = "5"
-
-# ===========================
-# MORSE CODE DICTIONARY (INCLUDES PUNCTUATIONS)
-# ===========================
-MORSE_CODE_DICT = {
-    'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
-    'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
-    'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
-    'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
-    'Y': '-.--', 'Z': '--..',
-
-    '0': '-----', '1': '.----', '2': '..---', '3': '...--',
-    '4': '....-', '5': '.....', '6': '-....', '7': '--...',
-    '8': '---..', '9': '----.',
-
-    '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--',
-    '&': '.-...', ':': '---...', ';': '-.-.-.', '(': '-.--.', ')': '-.--.-',
-    '/': '-..-.', '_': '..--.-', '+': '.-.-.', '-': '-....-', '=': '-...-',
-    '$': '...-..-', '@': '.--.-.', ' ': '/',
-}
-
-# Reverse the dictionary for Morse-to-text conversion
-REVERSE_MORSE_CODE_DICT = {value: key for key,
-                           value in MORSE_CODE_DICT.items()}
-
-
-def convert_to_morse(input_string):
-    """
-    Convert a given text string to its Morse code representation.
-
-    Parameters:
-    - input_string (str): The text string to be converted.
-
-    Returns:
-    - str: The Morse code representation of the input string.
-    """
-    return ' '.join(MORSE_CODE_DICT.get(char, '?') for char in input_string)
-
-
-def convert_from_morse(morse_code):
-    """
-    Convert a given Morse code string to its text representation.
-
-    Parameters:
-    - morse_code (str): The Morse code string to be converted.
-
-    Returns:
-    - str: The text representation of the input Morse code.
-    """
-    words = morse_code.split('  ')
-    return ' '.join(''.join(REVERSE_MORSE_CODE_DICT.get(symbol, '?') for symbol in word.split()) for word in words)
 
 
 def display_menu():
@@ -82,65 +33,25 @@ def display_menu():
     print(f"{EXIT}. Exit")
 
 
-def read_from_file(filename):
-    """
-    Read and return content from a specified file.
-
-    Parameters:
-    - filename (str): The path to the file to be read.
-
-    Returns:
-    - str: The content of the file.
-    """
-    try:
-        with open(filename, 'r') as file:
-            return file.read()
-    except FileNotFoundError:
-        print(f"Error: The file '{filename}' was not found.")
-    except PermissionError:
-        print(f"Error: Permission denied when trying to read '{filename}'.")
-    except IOError:
-        print(f"Error: An I/O error occurred while reading '{filename}'.")
-    return ""
-
-
-def write_to_file(filename, content):
-    """
-    Write the given content to a specified file. If the file doesn't exist, it will be created.
-    If it does exist, the content will overwrite the existing content.
-
-    Parameters:
-    - filename (str): The path to the file where content will be written.
-    - content (str): The content to be written to the file.
-    """
-    try:
-        with open(filename, 'w') as file:
-            file.write(content)
-    except PermissionError:
-        print(
-            f"Error: Permission denied when trying to write to '{filename}'.")
-    except IOError:
-        print(f"Error: An I/O error occurred while writing to '{filename}'.")
-
-
 def main():
     while True:
-        display_menu()  # Displaying the main menu
+        display_menu()
 
         choice = input("> ").strip()
 
+        # Convert text input to Morse code
         if choice == TEXT_TO_MORSE:
-            # Handle text to Morse code conversion
             user_input = input(
                 "Enter a string to convert to Morse Code: ").upper()
             print(convert_to_morse(user_input))
 
+        # Convert Morse code input to text
         elif choice == MORSE_TO_TEXT:
-            # Handle text to Morse code conversion from file
             user_input = input("Enter Morse Code to convert to text: ")
             print(convert_from_morse(user_input))
 
-        elif choice == FILE_TEXT_TO_MORSE:  # Reading text from file
+        # Convert text from a file to Morse code
+        elif choice == FILE_TEXT_TO_MORSE:
             input_filename = input(
                 "Enter the name of the file with the text: ")
             file_content = read_from_file(input_filename).upper()
@@ -152,7 +63,8 @@ def main():
             write_to_file(output_filename, morse_code)
             print(f"Morse code saved to {output_filename}")
 
-        elif choice == FILE_MORSE_TO_TEXT:  # Reading Morse code from file
+        # Convert Morse code from a file to text
+        elif choice == FILE_MORSE_TO_TEXT:
             input_filename = input(
                 "Enter the name of the file with the Morse code: ")
             morse_content = read_from_file(input_filename)
@@ -164,6 +76,7 @@ def main():
             write_to_file(output_filename, text_content)
             print(f"Text saved to {output_filename}")
 
+        # Exit the application
         elif choice == EXIT:
             print("Goodbye!")
             break
