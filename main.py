@@ -92,8 +92,16 @@ def read_from_file(filename):
     Returns:
     - str: The content of the file.
     """
-    with open(filename, 'r') as file:
-        return file.read()
+    try:
+        with open(filename, 'r') as file:
+            return file.read()
+    except FileNotFoundError:
+        print(f"Error: The file '{filename}' was not found.")
+    except PermissionError:
+        print(f"Error: Permission denied when trying to read '{filename}'.")
+    except IOError:
+        print(f"Error: An I/O error occurred while reading '{filename}'.")
+    return ""
 
 
 def write_to_file(filename, content):
@@ -105,8 +113,14 @@ def write_to_file(filename, content):
     - filename (str): The path to the file where content will be written.
     - content (str): The content to be written to the file.
     """
-    with open(filename, 'w') as file:
-        file.write(content)
+    try:
+        with open(filename, 'w') as file:
+            file.write(content)
+    except PermissionError:
+        print(
+            f"Error: Permission denied when trying to write to '{filename}'.")
+    except IOError:
+        print(f"Error: An I/O error occurred while writing to '{filename}'.")
 
 
 def main():
@@ -129,9 +143,11 @@ def main():
         elif choice == FILE_TEXT_TO_MORSE:  # Reading text from file
             input_filename = input(
                 "Enter the name of the file with the text: ")
+            file_content = read_from_file(input_filename).upper()
+            if not file_content:
+                continue
             output_filename = input(
                 "Enter the name of the file to save the Morse code: ")
-            file_content = read_from_file(input_filename).upper()
             morse_code = convert_to_morse(file_content)
             write_to_file(output_filename, morse_code)
             print(f"Morse code saved to {output_filename}")
@@ -139,9 +155,11 @@ def main():
         elif choice == FILE_MORSE_TO_TEXT:  # Reading Morse code from file
             input_filename = input(
                 "Enter the name of the file with the Morse code: ")
+            morse_content = read_from_file(input_filename)
+            if not morse_content:
+                continue
             output_filename = input(
                 "Enter the name of the file to save the text: ")
-            morse_content = read_from_file(input_filename)
             text_content = convert_from_morse(morse_content)
             write_to_file(output_filename, text_content)
             print(f"Text saved to {output_filename}")
